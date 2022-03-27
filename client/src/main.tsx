@@ -9,6 +9,7 @@ import { App } from './App'
 
 // contexts
 import { MantineProvider } from './contexts/Mantine'
+import { UserProfileContextProvider } from './contexts/UserProfile'
 
 function getLibrary(provider: any): Web3Provider {
   const library = new Web3Provider(provider)
@@ -21,7 +22,9 @@ ReactDOM.render(
     <BrowserRouter>
       <MantineProvider>
         <Web3ReactProvider getLibrary={getLibrary}>
-          <App />
+          <UserProfileContextProvider>
+            <App />
+          </UserProfileContextProvider>
         </Web3ReactProvider>
       </MantineProvider>
     </BrowserRouter>

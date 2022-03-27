@@ -7,9 +7,11 @@ import {
   Button,
   Group,
   Text,
+  Alert,
 } from '@mantine/core'
 import { useNotifications } from '@mantine/notifications'
-import { Check } from 'tabler-icons-react'
+import { Check, AlertCircle } from 'tabler-icons-react'
+import { useNavigate } from 'react-router-dom'
 
 // hooks
 import { useContract } from '../hooks/useContract'
@@ -53,6 +55,7 @@ function Arena({ character, setCharacter }: Props) {
   const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('')
 
   // hooks
+  const navigate = useNavigate()
   const { handleError } = useWeb3Error()
   const notifications = useNotifications()
   const { contract } = useContract({ name: 'EpicGame', withSigner: true })
@@ -82,7 +85,7 @@ function Arena({ character, setCharacter }: Props) {
       const error = err as Error
 
       handleError(error)
-      
+
       setAttackState('')
     }
   }
@@ -170,7 +173,7 @@ function Arena({ character, setCharacter }: Props) {
         </Group>
       )}
 
-      {character && (
+      {character ? (
         <Group direction='column' position='center'>
           <Card
             sx={(theme) => ({
@@ -210,6 +213,13 @@ function Arena({ character, setCharacter }: Props) {
               : `⚔️ attack damage ${character.attackDamage}`}
           </Text>
         </Group>
+      ) : (
+        <Alert icon={<AlertCircle size={16} />} color='yellow'>
+          <Text>you haven't minted any characters yet.</Text>
+          <Button onClick={() => navigate('/mint')} variant='gradient'>
+            mint your hero
+          </Button>
+        </Alert>
       )}
     </Group>
   )

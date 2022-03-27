@@ -1,6 +1,12 @@
-import { Group, Image } from '@mantine/core'
+import { Group, Image, Button } from '@mantine/core'
+
+// hooks
+import { useUserProfileContext } from '../hooks/useUserProfileContext'
 
 function Home() {
+  // hooks
+  const { handleAccountConnection } = useUserProfileContext()
+  
   return (
     <Group direction='column' position='center'>
       <Image
@@ -8,6 +14,10 @@ function Home() {
         alt='Russing guy finds out'
         withPlaceholder
       />
+
+      <Button onClick={handleAccountConnection} variant='gradient'>
+        connect your wallet
+      </Button>
     </Group>
   )
 }

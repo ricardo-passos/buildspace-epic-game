@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react'
 import { useNotifications } from '@mantine/notifications'
-import { Group, Button, Title, Text, Image, Card, Badge } from '@mantine/core'
-import { Check } from 'tabler-icons-react'
+import {
+  Group,
+  Button,
+  Title,
+  Text,
+  Image,
+  Card,
+  Badge,
+  Alert,
+} from '@mantine/core'
+import { Check, AlertCircle } from 'tabler-icons-react'
 import { useNavigate } from 'react-router-dom'
+import { useWeb3React } from '@web3-react/core'
 
 // hooks
 import { useContract } from '../hooks/useContract'
 import { useWeb3Error } from '../hooks/useWeb3Error'
+import { useUserProfileContext } from '../hooks/useUserProfileContext'
 
 // utils
 import { formatCharacterAttributes } from '../utils/formatCharacterAttributes'
@@ -33,9 +44,11 @@ function SelectCharacter({ setCharacter }: Props) {
   const [characters, setCharacters] = useState<CharacterAttributes[]>([])
 
   // hooks
+  const navigate = useNavigate()
+  const { active } = useWeb3React()
   const { handleError } = useWeb3Error()
   const notifications = useNotifications()
-  const navigate = useNavigate()
+  const { handleAccountConnection } = useUserProfileContext()
   const { contract } = useContract({ name: 'EpicGame', withSigner: true })
 
   async function mintCharacterNFT(characterId: number) {
@@ -112,6 +125,17 @@ function SelectCharacter({ setCharacter }: Props) {
     }
   }, [contract])
 
+  if (!active) {
+    return (
+      <Alert icon={<AlertCircle size={16} />} color='yellow'>
+        <Text>you need to connect your wallet before minting a hero.</Text>
+        <Button variant='gradient' onClick={handleAccountConnection}>
+          connect your wallet
+        </Button>
+      </Alert>
+    )
+  }
+
   return (
     <Group position='center' direction='column'>
       <Title order={3} sx={(theme) => ({ color: theme.colors.dark[0] })}>
@@ -125,13 +149,17 @@ function SelectCharacter({ setCharacter }: Props) {
               <Image src={imageURI} alt={name} />
             </Card.Section>
 
-            <Group>
+            <Group position='center' mt={20}>
               <Text>{name}</Text>
 
-              <Badge>{timesMinted}</Badge>
+              <Badge>minted {timesMinted}</Badge>
             </Group>
 
-            <Button variant='gradient' onClick={() => mintCharacterNFT(index)}>
+            <Button
+              mt={20}
+              variant='gradient'
+              onClick={() => mintCharacterNFT(index)}
+            >
               Mint {name}
             </Button>
           </Card>

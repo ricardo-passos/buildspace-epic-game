@@ -1,13 +1,10 @@
-import { useState, useEffect, forwardRef } from 'react'
+import { forwardRef } from 'react'
 import { Menu, Group, Avatar, Text, UnstyledButton } from '@mantine/core'
 import { useWeb3React } from '@web3-react/core'
 import { useNavigate } from 'react-router-dom'
 
 // hooks
-import { useWeb3Error } from '../hooks/useWeb3Error'
-
-// connectors
-import { injected } from '../web3/connectors'
+import { useUserProfileContext } from '../hooks/useUserProfileContext'
 
 type UserProfielProps = {
   wallet: string
@@ -55,39 +52,10 @@ const UserProfile = forwardRef<HTMLButtonElement, UserProfielProps>(
 )
 
 function Profile() {
-  // states
-  const [formattedWallet, setFormattedWallet] = useState('')
-
   // hooks
   const navigate = useNavigate()
-  const { handleError } = useWeb3Error()
-  const { activate, deactivate, active, account } = useWeb3React()
-
-  async function handleAccountConnection() {
-    if (active) {
-      setFormattedWallet('')
-      deactivate()
-      return
-    }
-
-    try {
-      await activate(injected, undefined, true)
-    } catch (err) {
-      const error = err as Error
-
-      handleError(error)
-    }
-  }
-
-  // formats user wallet
-  useEffect(() => {
-    if (active) {
-      const firstPart = account?.substring(0, 6)
-      const lastPart = account?.substring(38)
-
-      setFormattedWallet(`${firstPart} ... ${lastPart}`)
-    }
-  }, [active, account])
+  const { active } = useWeb3React()
+  const { formattedWallet, handleAccountConnection } = useUserProfileContext()
 
   return (
     <Menu control={<UserProfile wallet={formattedWallet} />}>
