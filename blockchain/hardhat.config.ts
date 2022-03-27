@@ -20,10 +20,20 @@ const config: HardhatUserConfig = {
     compilers: [{ version: "0.8.13" }],
   },
   networks: {
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
+    hardhat: {
+      accounts: [
+        {
+          privateKey: `0x${process.env.PRIVATE_KEY}`,
+          balance: "1000000000000000000000",
+        },
+      ],
+    },
+    rinkeby: {
+      url: process.env.RINKEBY_URL || "",
       accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+        process.env.PRIVATE_KEY !== undefined
+          ? [`0x${process.env.PRIVATE_KEY}`]
+          : [],
     },
   },
   gasReporter: {

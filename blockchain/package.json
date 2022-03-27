@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "node": "pnpm exec hardhat node",
+    "deploy": "pnpm exec hardhat run scripts/deploy.ts --network localhost"
   },
   "keywords": [],
   "author": "",
