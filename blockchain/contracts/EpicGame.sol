@@ -41,6 +41,8 @@ contract EpicGame is ERC721 {
     mapping(uint256 => CharacterAttributes) public nftHolderAttributes;
     CharacterAttributes[] public defaultCharacters;
     BigBoss public bigBoss;
+    uint256 private playerCriticalHitChance;
+    uint256 private bigBossMissHitChance;
 
     constructor(
         string[] memory characterNames,
@@ -88,6 +90,15 @@ contract EpicGame is ERC721 {
             bigBoss.name,
             bigBoss.hp,
             bigBoss.imageURI
+        );
+
+        playerCriticalHitChance = (block.timestamp + block.difficulty) % 100;
+        bigBossMissHitChance = (block.timestamp + block.difficulty) % 100;
+
+        console.log(
+            "playerCriticalHitChance: %d --- bigBossMissHitChance: %d",
+            playerCriticalHitChance,
+            bigBossMissHitChance
         );
 
         _tokenIds.increment();
@@ -187,16 +198,39 @@ contract EpicGame is ERC721 {
 
         require(bigBoss.hp > 0, "Error: boss must have HP to attack boss.");
 
-        if (bigBoss.hp < player.attackDamage) {
-            bigBoss.hp = 0;
-        } else {
-            bigBoss.hp -= player.attackDamage;
+        uint256 tempPlayerCritialDamage = player.attackDamage;
+        uint256 tempBigBossAttackDamage = bigBoss.attackDamage;
+        playerCriticalHitChance =
+            (block.difficulty + block.timestamp + playerCriticalHitChance) %
+            100;
+        bigBossMissHitChance =
+            (block.difficulty + block.timestamp + bigBossMissHitChance) %
+            100;
+
+        console.log(
+            "playerCriticalHitChance: %d --- bigBossMissHitChance: %d",
+            playerCriticalHitChance,
+            bigBossMissHitChance
+        );
+
+        if (playerCriticalHitChance <= 20) {
+            tempPlayerCritialDamage = player.attackDamage + 200;
         }
 
-        if (player.hp < bigBoss.attackDamage) {
+        if (bigBoss.hp < tempPlayerCritialDamage) {
+            bigBoss.hp = 0;
+        } else {
+            bigBoss.hp -= tempPlayerCritialDamage;
+        }
+
+        if (bigBossMissHitChance <= 20) {
+            tempBigBossAttackDamage = 0;
+        }
+
+        if (player.hp < tempBigBossAttackDamage) {
             player.hp = 0;
         } else {
-            player.hp -= bigBoss.attackDamage;
+            player.hp -= tempBigBossAttackDamage;
         }
 
         console.log("Player attacked boss. New boss hp: %s", bigBoss.hp);
