@@ -105,7 +105,7 @@ contract EpicGame is ERC721 {
             hp: defaultCharacters[_characterIndex].hp,
             maxHp: defaultCharacters[_characterIndex].maxHp,
             attackDamage: defaultCharacters[_characterIndex].attackDamage,
-            timesMinted: defaultCharacters[_characterIndex].timesMinted += 1
+            timesMinted: defaultCharacters[_characterIndex].timesMinted
         });
 
         defaultCharacters[_characterIndex].timesMinted += 1;
