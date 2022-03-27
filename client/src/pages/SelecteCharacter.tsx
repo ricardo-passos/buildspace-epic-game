@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNotifications } from '@mantine/notifications'
 import { Group, Button, Title, Text, Image, Card, Badge } from '@mantine/core'
 import { Check } from 'tabler-icons-react'
+import { useNavigate } from 'react-router-dom'
 
 // hooks
 import { useContract } from '../hooks/useContract'
@@ -34,6 +35,7 @@ function SelectCharacter({ setCharacter }: Props) {
   // hooks
   const { handleError } = useWeb3Error()
   const notifications = useNotifications()
+  const navigate = useNavigate()
   const { contract } = useContract({ name: 'EpicGame', withSigner: true })
 
   async function mintCharacterNFT(characterId: number) {
@@ -45,9 +47,7 @@ function SelectCharacter({ setCharacter }: Props) {
         autoClose: false,
       })
 
-      await (
-        await contract?.functions.mintCharacterNFT(characterId)
-      )?.wait()
+      await (await contract?.functions.mintCharacterNFT(characterId))?.wait()
 
       notifications.hideNotification(id)
       notifications.showNotification({
@@ -55,6 +55,8 @@ function SelectCharacter({ setCharacter }: Props) {
         message: '',
         icon: <Check />,
         color: 'green',
+        autoClose: 5000,
+        onClose: () => navigate('/fight'),
       })
     } catch (err) {
       const error = err as Error

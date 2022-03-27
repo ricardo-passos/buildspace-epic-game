@@ -1,6 +1,7 @@
 import { useState, useEffect, forwardRef } from 'react'
 import { Menu, Group, Avatar, Text, UnstyledButton } from '@mantine/core'
 import { useWeb3React } from '@web3-react/core'
+import { useNavigate } from 'react-router-dom'
 
 // hooks
 import { useWeb3Error } from '../hooks/useWeb3Error'
@@ -16,6 +17,7 @@ const UserProfile = forwardRef<HTMLButtonElement, UserProfielProps>(
   ({ wallet, ...props }, ref) => {
     // hooks
     const { active } = useWeb3React()
+
     return (
       <UnstyledButton
         ref={ref}
@@ -57,6 +59,7 @@ function Profile() {
   const [formattedWallet, setFormattedWallet] = useState('')
 
   // hooks
+  const navigate = useNavigate()
   const { handleError } = useWeb3Error()
   const { activate, deactivate, active, account } = useWeb3React()
 
@@ -92,7 +95,10 @@ function Profile() {
       <Menu.Item onClick={handleAccountConnection}>
         {active ? 'disconnect wallet' : 'connect wallet'}
       </Menu.Item>
-      <Menu.Item>character</Menu.Item>
+      <Menu.Item onClick={() => navigate('/mint')}>characters</Menu.Item>
+
+      <Menu.Label>arena</Menu.Label>
+      <Menu.Item onClick={() => navigate('/fight')}>fight</Menu.Item>
     </Menu>
   )
 }

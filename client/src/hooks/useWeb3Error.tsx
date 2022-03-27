@@ -17,7 +17,9 @@ function useWeb3Error() {
   // hooks
   const notifications = useNotifications()
 
-  const handleError = (error: Error) => {
+  const handleError = (
+    error: Error & { data?: { code: number; message: string } }
+  ) => {
     const NotificationFactory = ({
       title,
       message,
@@ -60,6 +62,25 @@ function useWeb3Error() {
       NotificationFactory({
         title: 'user aborted request',
         message: 'you need to confirm the request to continue.',
+      })
+    } else if (
+      error.data?.message.includes(
+        'Error: character must have HP to attack boss'
+      )
+    ) {
+      NotificationFactory({
+        title: 'your character is dead',
+        message: 'good luck next time.',
+      })
+    } else if (
+      error.message.includes(
+        'Nonce too high.'
+      )
+    ) {
+      NotificationFactory({
+        title: 'nonce too high',
+        message:
+          "your MetaMask isn't in sync with the blockchain. try to reset your MetaMask: settings -> advanced -> reset account",
       })
     } else {
       NotificationFactory({

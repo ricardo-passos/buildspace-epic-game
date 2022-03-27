@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Box, Group, Title } from '@mantine/core'
 import { useWeb3React } from '@web3-react/core'
+import { Routes, Route, Link } from 'react-router-dom'
 
 // components
 import { Header } from './components/Header'
@@ -73,13 +74,27 @@ function App() {
           ⚔️ Innvo Slayer ⚔️
         </Title>
 
-        {!active ? (
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route
+            path='/mint'
+            element={<SelectCharacter setCharacter={setCharacter} />}
+          />
+          <Route
+            path='/fight'
+            element={
+              <Arena character={character} setCharacter={setCharacter} />
+            }
+          />
+        </Routes>
+
+        {/* {!active ? (
           <Home />
         ) : active && !character ? (
           <SelectCharacter setCharacter={setCharacter} />
         ) : (
           <Arena character={character} setCharacter={setCharacter} />
-        )}
+        )} */}
       </Group>
     </Box>
   )

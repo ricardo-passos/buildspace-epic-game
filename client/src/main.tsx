@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { Web3ReactProvider } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { BrowserRouter } from 'react-router-dom'
 
 // components
 import { App } from './App'
@@ -17,11 +18,13 @@ function getLibrary(provider: any): Web3Provider {
 
 ReactDOM.render(
   <React.StrictMode>
-    <MantineProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <App />
-      </Web3ReactProvider>
-    </MantineProvider>
+    <BrowserRouter>
+      <MantineProvider>
+        <Web3ReactProvider getLibrary={getLibrary}>
+          <App />
+        </Web3ReactProvider>
+      </MantineProvider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 )

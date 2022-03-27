@@ -13,6 +13,7 @@ import { Check } from 'tabler-icons-react'
 
 // hooks
 import { useContract } from '../hooks/useContract'
+import { useWeb3Error } from '../hooks/useWeb3Error'
 
 // types
 import type { Dispatch, SetStateAction } from 'react'
@@ -52,6 +53,7 @@ function Arena({ character, setCharacter }: Props) {
   const [attackState, setAttackState] = useState<'attacking' | 'hit' | ''>('')
 
   // hooks
+  const { handleError } = useWeb3Error()
   const notifications = useNotifications()
   const { contract } = useContract({ name: 'EpicGame', withSigner: true })
 
@@ -77,7 +79,10 @@ function Arena({ character, setCharacter }: Props) {
         autoClose: 5000,
       })
     } catch (err) {
-      console.error('Error attacking boss:', err)
+      const error = err as Error
+
+      handleError(error)
+      
       setAttackState('')
     }
   }
